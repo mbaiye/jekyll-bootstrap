@@ -14,6 +14,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential 
+    - name: Gem source
+      run: gem sources --add https://rubygems.org/
     - name: Update Ruby
       run: sudo gem install sass:1.57.1
            sudo gem update
