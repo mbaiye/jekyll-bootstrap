@@ -15,10 +15,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential
     - name: Update Ruby
-      fail_on_error: true
-      brakeman_flags: '--no-exit-on-warn --no-exit-on-error'
       run: sudo gem install sass-embedded:1.57.1
            sudo gem update
+      fail_on_error: true
+      brakeman_flags: '--no-exit-on-warn --no-exit-on-error'
     - name: Install Jekyll
       run: sudo gem install jekyll bundler
     - name: Build Jekyll site
