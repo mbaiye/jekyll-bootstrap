@@ -15,7 +15,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential
     - name: Update Ruby
-      run: sudo gem install sass-embedded -v 1.57.1
+      run: sudo gem install sass-embedded:1.57.1
            sudo gem update
     - name: Install Jekyll
       run: sudo gem install jekyll bundler
