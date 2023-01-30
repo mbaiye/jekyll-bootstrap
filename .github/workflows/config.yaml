@@ -17,8 +17,10 @@ jobs:
     - name: Update Ruby
       run: sudo gem install sass-embedded:1.57.1
            sudo gem update
-      fail_on_error: true
-      brakeman_flags: '--no-exit-on-warn --no-exit-on-error'
+    - name: Job fail
+      continue-on-error: true
+      run: |
+        exit 1
     - name: Install Jekyll
       run: sudo gem install jekyll bundler
     - name: Build Jekyll site
