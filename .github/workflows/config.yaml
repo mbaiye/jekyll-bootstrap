@@ -14,13 +14,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential
-    - name: Update Ruby
-      run: sudo gem install sass-embedded:1.57.1
-           sudo gem update
-    - name: Job fail
-      continue-on-error: true
-      run: |
-        exit 1
     - name: Install Jekyll
       run: sudo gem install jekyll bundler
     - name: Build Jekyll site
