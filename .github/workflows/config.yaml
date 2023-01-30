@@ -15,7 +15,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential 
     - name: Install Jekyll
-      run: sudo gem install jekyll bundler
+      run: |
+        black --check || true
+        sudo gem install jekyll bundler
     - name: Build Jekyll site
       run: bundle exec jekyll build
     - name: sudo Install AWS CLI
