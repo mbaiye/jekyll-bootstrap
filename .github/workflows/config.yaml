@@ -6,26 +6,20 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Setup Ruby
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ruby-full build-essential 
-    - name: Install Jekyll
-      run: |
-        black --check || true
-        sudo gem install jekyll bundler
     - name: Build Jekyll site
       run: bundle exec jekyll build
+    - name: Creating version.txt
+      run: cd _gh_pages && cat version.txt > ${{ github.run_number }}
     - name: sudo Install AWS CLI
       run: sudo apt-get install -y awscli
     - name: Configure AWS credentials
       run: aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
                   aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY_ID}
-    - name: Sync with S3
-      run: aws s3 sync _site/ s3://$S3_BUCKET_NAME/ --include "*.*" --delete
+   #- name: Sync with S3
+     # run: aws s3 sync _site/ s3://$S3_BUCKET_NAME/ --include "*.*" --delete
 
 
