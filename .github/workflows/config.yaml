@@ -11,7 +11,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Build Jekyll site
-        uses: actions/jekyll-build-pages@v1
+      uses: actions/jekyll-build-pages@v1
       #run: cd /usr/local/bin && sudo bundle exec jekyll build
     - name: Creating version.txt
       run: cd _gh_pages && cat version.txt > ${{ github.run_number }}
