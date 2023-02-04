@@ -1,29 +1,54 @@
-name: BootStrap Web
+name: Build Jekyll Site
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - moyo
+
+env:
+  JEKYLL_ENV: production
+  AWS_REGION: us-west-2
+  S3_BUCKET: my-bucket-name
 
 jobs:
-  build-and-deploy:
-    runs-on: [self-hosted]
+  build:
+    runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Build Jekyll site
-      uses: actions/jekyll-build-pages@v1
+
+    - name: Setup Ruby
+      uses: actions/setup-ruby@v1
       with:
-        source: cd /usr/local/./
-        destination: cd /usr/local/./_site
-      #run: cd /usr/local/bin && sudo bundle exec jekyll build
-    - name: Creating version.txt
-      run: cd _gh_pages && cat version.txt > ${{ github.run_number }}
-    - name: sudo Install AWS CLI
-      run: sudo apt-get install -y awscli
-    - name: Configure AWS credentials
-      run: aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-                  aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY_ID}
-   #- name: Sync with S3
-     # run: aws s3 sync _site/ s3://$S3_BUCKET_NAME/ --include "*.*" --delete
+        ruby-version: 2.7.0
 
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
 
+    - name: Build site
+      run: |
+        bundle exec jekyll build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_gh_pages
+
+    - name: Create version file
+      run: |
+        echo "Job: ${GITHUB_JOB}\nBuild: ${GITHUB_RUN_NUMBER}" > ./_gh_pages/version.txt
+
+    - name: Publish to S3
+      uses: aws-actions/upload-to-s3@v1
+      with:
+        args: _gh_pages
+        bucket: ${{ env.S3_BUCKET }}
+        region: ${{ env.AWS_REGION }}
+        acl: public-read
+        env_vars: |
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
